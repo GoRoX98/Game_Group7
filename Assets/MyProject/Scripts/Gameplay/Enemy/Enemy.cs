@@ -1,27 +1,23 @@
 using System;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour, IDamageble
+public abstract class Enemy : MonoBehaviour, IDamageble
 {
-    [SerializeField] private int _maxHealth;
-    private int _health;
+    [Header("Enemy Options")]
+    [SerializeField] protected int _maxHealth = 100;
+    protected int _health;
 
     public int Health => _health;
 
     public EventHandler<int> TakeDamage => OnTakeDmg;
     public EventHandler<int> TakeHeal => OnHeal;
 
-    private void Start()
-    {
-        _health = _maxHealth;
-    }
-
-    private void Die()
+    protected virtual void Die()
     {
         print("Dead");
     }
 
-    private void OnHeal(object sender, int heal)
+    protected virtual void OnHeal(object sender, int heal)
     {
         if (_health < _maxHealth)
             _health += heal;
@@ -30,7 +26,7 @@ public class Enemy : MonoBehaviour, IDamageble
             _health = _maxHealth;
     }
 
-    private void OnTakeDmg(object sender, int damage)
+    protected virtual void OnTakeDmg(object sender, int damage)
     {
         if (sender is not Attacker)
             return;

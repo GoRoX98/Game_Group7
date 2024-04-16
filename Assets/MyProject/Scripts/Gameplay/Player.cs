@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour, IDamageble
 {
@@ -8,7 +9,9 @@ public class Player : MonoBehaviour, IDamageble
     [SerializeField] private int _maxHealth = 100;
     [SerializeField] private float _speed;
 
-    private Vector3 _input;
+    private PlayerInput _input;
+    private InputAction _moveAction;
+    private Vector3 _move;
     private Camera _camera;
 
     private int _health;
@@ -21,20 +24,39 @@ public class Player : MonoBehaviour, IDamageble
 
     #region UnityMethods
 
+    private void Awake()
+    {
+        _input = GetComponent<PlayerInput>();
+        _moveAction = _input.actions["Movement"];
+    }
+
+    private void OnEnable()
+    {
+        //_moveAction.performed += Move;
+    }
+
+    private void OnDisable()
+    {
+        //_moveAction.performed -= Move;
+    }
+
     private void Start()
     {
         _health = _maxHealth;
-        _alive = _health > 0 ? true : false;
+        _alive = _health > 0;
         _camera = Camera.main;
     }
 
     private void Update()
     {
-        var horizontal = Input.GetAxis("Horizontal");
+        //Old movement
+        /*var horizontal = Input.GetAxis("Horizontal");
         var vertical = Input.GetAxis("Vertical");
-        _input = new Vector3(horizontal, 0, vertical);
+        _move = new Vector3(horizontal, 0, vertical);*/
 
-        Vector3 movementVector = _camera.transform.TransformDirection(_input);
+        _move = _moveAction.ReadValue<Vector2>();
+
+        Vector3 movementVector = _camera.transform.TransformDirection(_move);
         movementVector.y = 0;
         movementVector.Normalize();
 
@@ -46,6 +68,11 @@ public class Player : MonoBehaviour, IDamageble
 
     #endregion
 
+    private void Move(InputAction.CallbackContext obj)
+    {
+        _move = obj.ReadValue<Vector2>();
+
+    }
 
     private void Die()
     {
