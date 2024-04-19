@@ -2,21 +2,29 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Player : MonoBehaviour, IDamageble
+public class Player : MonoBehaviour, IDamageble, IMoveble
 {
     [SerializeField] private CharacterController _characterController;
     [SerializeField] private Animator _animator;
+
+    [Header("Player Settings")]
     [SerializeField] private int _maxHealth = 100;
     [SerializeField] private float _speed;
+    [SerializeField] private float _maxSpeed = 5f;
+    [SerializeField] private float _speedIncrase = 1f;
 
     private PlayerInput _input;
     private InputAction _moveAction;
+    private Attacker _attacker;
     private Vector3 _move;
     private Camera _camera;
 
     private int _health;
     private bool _alive = true;
 
+    public float Speed => _speed;
+    public float MaxSpeed => _maxSpeed;
+    public float SpeedIncrase => _speedIncrase;
     public int Health => _health;
 
     public EventHandler<int> TakeDamage => OnTakeDmg;
@@ -26,6 +34,7 @@ public class Player : MonoBehaviour, IDamageble
 
     private void Awake()
     {
+        _attacker = GetComponent<Attacker>();
         _input = GetComponent<PlayerInput>();
         _moveAction = _input.actions["Movement"];
     }
@@ -64,6 +73,12 @@ public class Player : MonoBehaviour, IDamageble
 
         _characterController.Move(movementVector * (_speed * Time.deltaTime));
         _animator.SetFloat("Speed", _characterController.velocity.magnitude);
+    }
+
+    private void LateUpdate()
+    {
+        if (Input.GetMouseButtonDown(0))
+            _attacker.MeleeAttack();
     }
 
     #endregion

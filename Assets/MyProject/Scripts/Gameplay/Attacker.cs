@@ -14,6 +14,8 @@ public class Attacker : MonoBehaviour
     private Collider[] _hits = new Collider[3];
     private float _attackTime;
 
+    public float AttackRadius => _radius;
+
     private void Start() => ResetAttackTimer();
 
     void Update()
@@ -22,19 +24,21 @@ public class Attacker : MonoBehaviour
         {
             _attackTime -= Time.deltaTime;
         }
-
-        if (Input.GetMouseButtonDown(0) && CanAttack)
-        {
-
-            var index = Random.Range(0, 2);
-            _animator.SetInteger("AttackVariant", index);
-            _animator.SetTrigger("Attack");
-            ResetAttackTimer();
-            AttackNearEnemies();
-        }
     }
 
-    private void AttackNearEnemies()
+    public void MeleeAttack()
+    {
+        if (!CanAttack)
+            return;
+
+        var index = Random.Range(0, 2);
+        _animator.SetInteger("AttackVariant", index);
+        _animator.SetTrigger("Attack");
+        ResetAttackTimer();
+        AttackNear();
+    }
+
+    private void AttackNear()
     {
         int count = Physics.OverlapSphereNonAlloc(transform.position, _radius, _hits, _damageMask);
 

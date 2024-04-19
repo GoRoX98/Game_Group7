@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemyMelee : Enemy
+[RequireComponent(typeof(Attacker))]
+public class EnemyMelee : Enemy, IMoveble
 {
     [SerializeField] private float _maxSpeed = 5f;
     [SerializeField] private float _speedIncrase = 1f;
@@ -9,29 +10,39 @@ public class EnemyMelee : Enemy
     [Space]
     [SerializeField] private Animator _animator;
     [SerializeField] private NavMeshAgent _agent;
+    private Attacker _attacker;
 
-    private float _currentSpeed = 0f;
+    private StateMachine _stateMachine;
+
+    public float Speed => _agent.speed;
+    public float MaxSpeed => _maxSpeed;
+    public float SpeedIncrase => _speedIncrase;
 
     private void Awake()
     {
-        _health = _maxHealth;
+        _attacker = _agent.GetComponent<Attacker>();
+        
+        _stateMachine = new StateMachine();
+        _stateMachine.AddState(new IdleState(_stateMachine, _animator));
+        _stateMachine.AddState(new MoveState(_stateMachine, _animator, this));
+        _stateMachine.SetState<IdleState>();
+
+        _currentHealth = _maxHealth;
     }
 
     private void Update()
     {
-        if (_agent.hasPath && _currentSpeed < _maxSpeed)
-        {
-            _currentSpeed += _speedIncrase * Time.deltaTime;
-        }
-
         if (!_agent.hasPath)
         {
-            _currentSpeed = 0f;
+            _stateMachine.SetState<IdleState>();
             _agent.SetDestination(TakeNewPath());
         }
+        else if (_agent.hasPath)
+            _stateMachine.SetState<MoveState>();
 
-        _agent.speed = _currentSpeed;
-        _animator.SetFloat("Speed", _currentSpeed);
+        _agent.speed = _animator.GetFloat("Speed");
+
+        _stateMachine.Update();
     }
 
     private Vector3 TakeNewPath()
