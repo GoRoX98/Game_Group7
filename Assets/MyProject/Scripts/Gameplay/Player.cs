@@ -19,13 +19,13 @@ public class Player : MonoBehaviour, IDamageble, IMoveble
     private Vector3 _move;
     private Camera _camera;
 
-    private int _health;
+    private int _currentHealth;
     private bool _alive = true;
 
     public float Speed => _speed;
     public float MaxSpeed => _maxSpeed;
     public float SpeedIncrase => _speedIncrase;
-    public int Health => _health;
+    public int Health => _currentHealth;
 
     public EventHandler<int> TakeDamage => OnTakeDmg;
     public EventHandler<int> TakeHeal => OnHeal;
@@ -51,8 +51,8 @@ public class Player : MonoBehaviour, IDamageble, IMoveble
 
     private void Start()
     {
-        _health = _maxHealth;
-        _alive = _health > 0;
+        _currentHealth = _maxHealth;
+        _alive = _currentHealth > 0;
         _camera = Camera.main;
     }
 
@@ -78,7 +78,7 @@ public class Player : MonoBehaviour, IDamageble, IMoveble
     private void LateUpdate()
     {
         if (Input.GetMouseButtonDown(0))
-            _attacker.MeleeAttack();
+            _attacker.Attack();
     }
 
     #endregion
@@ -96,24 +96,26 @@ public class Player : MonoBehaviour, IDamageble, IMoveble
 
     private void OnHeal(object sender, int heal)
     {
-        if (_health < _maxHealth)
-            _health += heal;
+        if (_currentHealth < _maxHealth)
+            _currentHealth += heal;
 
-        if (_health > _maxHealth)
-            _health = _maxHealth;
+        if (_currentHealth > _maxHealth)
+            _currentHealth = _maxHealth;
     }
 
     private void OnTakeDmg(object sender, int damage)
     {
+        print($"Player Health: {_currentHealth} | Dmg: {damage}");
+
         if (sender is not Attacker)
             return;
 
-        if (_health > damage)
-            _health -= damage;
+        if (_currentHealth > damage)
+            _currentHealth -= damage;
         else if (_alive)
         {
             _alive = false;
-            _health = 0;
+            _currentHealth = 0;
             Die();
         }
     }

@@ -4,6 +4,7 @@ using UnityEngine;
 public abstract class Enemy : MonoBehaviour, IDamageble
 {
     [Header("Enemy Options")]
+    [SerializeField] protected float _visionRadius = 10f;
     [SerializeField] protected int _maxHealth = 100;
     protected int _currentHealth;
 
@@ -41,6 +42,12 @@ public abstract class Enemy : MonoBehaviour, IDamageble
         }
 
         print($"Health: {_currentHealth} | Dmg: {damage}");
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position, _visionRadius);
     }
 
 }

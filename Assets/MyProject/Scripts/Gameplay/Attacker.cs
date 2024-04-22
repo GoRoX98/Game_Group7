@@ -26,7 +26,13 @@ public class Attacker : MonoBehaviour
         }
     }
 
-    public void MeleeAttack()
+    //Так как будет дистанционная атакая, делаем прослойку на будущее
+    public void Attack()
+    {
+        MeleeAttack();
+    }
+
+    private void MeleeAttack()
     {
         if (!CanAttack)
             return;

@@ -25,6 +25,9 @@ public class EnemyMelee : Enemy, IMoveble
         _stateMachine = new StateMachine();
         _stateMachine.AddState(new IdleState(_stateMachine, _animator));
         _stateMachine.AddState(new MoveState(_stateMachine, _animator, this));
+        _stateMachine.AddState(new PersecutionState(_stateMachine, _animator, _attacker, GameManager.PlayerTransform, _agent, this));
+        _stateMachine.AddState(new AttackState(_stateMachine, _animator, GameManager.PlayerTransform.GetComponent<Player>(), 
+                                                GameManager.PlayerTransform, _attacker));
         _stateMachine.SetState<IdleState>();
 
         _currentHealth = _maxHealth;
@@ -37,8 +40,17 @@ public class EnemyMelee : Enemy, IMoveble
             _stateMachine.SetState<IdleState>();
             _agent.SetDestination(TakeNewPath());
         }
-        else if (_agent.hasPath)
+        else if (_agent.hasPath && _stateMachine.CurrentState is IdleState)
             _stateMachine.SetState<MoveState>();
+
+        if (_stateMachine.CurrentState is not PersecutionState && _stateMachine.CurrentState is not AttackState)
+        {
+            float distance = Vector3.Distance(GameManager.PlayerPos, transform.position);
+            if (distance <= _visionRadius && distance > _attacker.AttackRadius)
+                _stateMachine.SetState<PersecutionState>();
+            else if (distance <= _attacker.AttackRadius)
+                _stateMachine.SetState<AttackState>();
+        }
 
         _agent.speed = _animator.GetFloat("Speed");
 
