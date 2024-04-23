@@ -5,9 +5,15 @@ public abstract class Enemy : MonoBehaviour, IDamageble
 {
     [Header("Enemy Options")]
     [SerializeField] protected float _visionRadius = 10f;
-    [SerializeField] protected int _maxHealth = 100;
+    [SerializeField] protected int _level = 1;
+    [SerializeField] protected CharProgressSO _progressSO;
+    protected CharCharacteristics _charData => _progressSO.CurrentLevelData(_level);
     protected int _currentHealth;
 
+    public int MaxHealth => _charData.MaxHP;
+    public float MaxSpeed => _charData.MaxSpeed;
+    public float MinSpeed => _charData.MinSpeed;
+    public float SpeedIncrase => _charData.SpeedIncrase;
     public int Health => _currentHealth;
     public bool IsAlive => _currentHealth > 0;
 
@@ -21,11 +27,11 @@ public abstract class Enemy : MonoBehaviour, IDamageble
 
     protected virtual void OnHeal(object sender, int heal)
     {
-        if (_currentHealth < _maxHealth)
+        if (_currentHealth < MaxHealth)
             _currentHealth += heal;
 
-        if (_currentHealth > _maxHealth)
-            _currentHealth = _maxHealth;
+        if (_currentHealth > MaxHealth)
+            _currentHealth = MaxHealth;
     }
 
     protected virtual void OnTakeDmg(object sender, int damage)

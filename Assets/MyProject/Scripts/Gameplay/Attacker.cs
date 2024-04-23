@@ -6,17 +6,22 @@ public class Attacker : MonoBehaviour
 
     [SerializeField] private Animator _animator;
     [SerializeField] private LayerMask _damageMask;
-
-    [SerializeField] private float _attackCooldown;
-    [SerializeField] private int _damage;
-    [SerializeField] private float _radius;
+    [SerializeField] private WeaponSO _weapon;
+    [SerializeField] private MeshFilter _weaponMeshFilter;
 
     private Collider[] _hits = new Collider[3];
     private float _attackTime;
 
-    public float AttackRadius => _radius;
+    public float AttackRadius => _weapon.Range;
+    public int Damage => _weapon.Damage;
+    public float Cooldown => _weapon.Cooldown;
 
-    private void Start() => ResetAttackTimer();
+    private void Start()
+    {
+        ResetAttackTimer();
+
+        _weaponMeshFilter.mesh = _weapon.Mesh;
+    }
 
     void Update()
     {
@@ -46,22 +51,22 @@ public class Attacker : MonoBehaviour
 
     private void AttackNear()
     {
-        int count = Physics.OverlapSphereNonAlloc(transform.position, _radius, _hits, _damageMask);
+        int count = Physics.OverlapSphereNonAlloc(transform.position, AttackRadius, _hits, _damageMask);
 
         for (int i = 0; i < count; i++)
         {
             if (_hits[i].TryGetComponent<IDamageble>(out var damagble))
             {
-                damagble.TakeDamage?.Invoke(this, _damage);
+                damagble.TakeDamage?.Invoke(this, Damage);
             }
         }
     }
 
-    private void ResetAttackTimer() => _attackTime = _attackCooldown;
+    private void ResetAttackTimer() => _attackTime = Cooldown;
 
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, _radius);
+        Gizmos.DrawWireSphere(transform.position, AttackRadius);
     }
 }

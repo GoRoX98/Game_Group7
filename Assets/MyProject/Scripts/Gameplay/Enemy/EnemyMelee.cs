@@ -15,10 +15,8 @@ public class EnemyMelee : Enemy, IMoveble
     private StateMachine _stateMachine;
 
     public float Speed => _agent.speed;
-    public float MaxSpeed => _maxSpeed;
-    public float SpeedIncrase => _speedIncrase;
 
-    private void Awake()
+    private void Start()
     {
         _attacker = _agent.GetComponent<Attacker>();
         
@@ -30,7 +28,7 @@ public class EnemyMelee : Enemy, IMoveble
                                                 GameManager.PlayerTransform, _attacker));
         _stateMachine.SetState<IdleState>();
 
-        _currentHealth = _maxHealth;
+        _currentHealth = MaxHealth;
     }
 
     private void Update()

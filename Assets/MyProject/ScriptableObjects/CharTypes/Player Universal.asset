@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38b93b2b10ef7f0489a82ea1161a9e48, type: 3}
+  m_Name: Player Universal
+  m_EditorClassIdentifier: 
+  _name: Universal
+  "_char\u0421haracteristicsData":
+  - MaxHP: 100
+    MaxSpeed: 6
+    MinSpeed: 1
+    SpeedIncrase: 1
+  - MaxHP: 120
+    MaxSpeed: 7
+    MinSpeed: 1.5
+    SpeedIncrase: 1.2
+  - MaxHP: 180
+    MaxSpeed: 8
+    MinSpeed: 1.5
+    SpeedIncrase: 1.5
+  - MaxHP: 250
+    MaxSpeed: 8
+    MinSpeed: 1.5
+    SpeedIncrase: 2
+  - MaxHP: 300
+    MaxSpeed: 10
+    MinSpeed: 2
+    SpeedIncrase: 2

@@ -8,11 +8,11 @@ public class Player : MonoBehaviour, IDamageble, IMoveble
     [SerializeField] private Animator _animator;
 
     [Header("Player Settings")]
-    [SerializeField] private int _maxHealth = 100;
-    [SerializeField] private float _speed;
-    [SerializeField] private float _maxSpeed = 5f;
-    [SerializeField] private float _speedIncrase = 1f;
+    [SerializeField] private int _level = 1;
+    [SerializeField] private CharProgressSO _progressSO;
+    private CharCharacteristics _charData => _progressSO.CurrentLevelData(_level);
 
+    private float _currentSpeed = 1f;
     private PlayerInput _input;
     private InputAction _moveAction;
     private Attacker _attacker;
@@ -22,13 +22,16 @@ public class Player : MonoBehaviour, IDamageble, IMoveble
     private int _currentHealth;
     private bool _alive = true;
 
-    public float Speed => _speed;
-    public float MaxSpeed => _maxSpeed;
-    public float SpeedIncrase => _speedIncrase;
+    public float Speed => _currentSpeed;
+    public float MaxSpeed => _charData.MaxSpeed;
+    public float SpeedIncrase => _charData.SpeedIncrase;
     public int Health => _currentHealth;
+    public int MaxHealth => _charData.MaxHP;
 
     public EventHandler<int> TakeDamage => OnTakeDmg;
     public EventHandler<int> TakeHeal => OnHeal;
+
+    public static event Action<int, int> PlayerHealthChanged;
 
     #region UnityMethods
 
@@ -51,9 +54,10 @@ public class Player : MonoBehaviour, IDamageble, IMoveble
 
     private void Start()
     {
-        _currentHealth = _maxHealth;
+        _currentHealth = MaxHealth;
         _alive = _currentHealth > 0;
         _camera = Camera.main;
+        PlayerHealthChanged?.Invoke(_currentHealth, MaxHealth);
     }
 
     private void Update()
@@ -71,7 +75,12 @@ public class Player : MonoBehaviour, IDamageble, IMoveble
 
         transform.forward = movementVector;
 
-        _characterController.Move(movementVector * (_speed * Time.deltaTime));
+        if (movementVector.x != 0 && movementVector.z != 0 && _currentSpeed < MaxSpeed)
+            _currentSpeed += SpeedIncrase * Time.deltaTime;
+        else if (movementVector.x == 0 && movementVector.z == 0)
+            _currentSpeed = _charData.MinSpeed;
+
+        _characterController.Move(movementVector * (_currentSpeed * Time.deltaTime));
         _animator.SetFloat("Speed", _characterController.velocity.magnitude);
     }
 
@@ -96,16 +105,17 @@ public class Player : MonoBehaviour, IDamageble, IMoveble
 
     private void OnHeal(object sender, int heal)
     {
-        if (_currentHealth < _maxHealth)
+        if (_currentHealth < MaxHealth)
             _currentHealth += heal;
 
-        if (_currentHealth > _maxHealth)
-            _currentHealth = _maxHealth;
+        if (_currentHealth > MaxHealth)
+            _currentHealth = MaxHealth;
+
+        PlayerHealthChanged?.Invoke(_currentHealth, MaxHealth);
     }
 
     private void OnTakeDmg(object sender, int damage)
     {
-        print($"Player Health: {_currentHealth} | Dmg: {damage}");
 
         if (sender is not Attacker)
             return;
@@ -118,6 +128,9 @@ public class Player : MonoBehaviour, IDamageble, IMoveble
             _currentHealth = 0;
             Die();
         }
+
+        print($"Player Health: {_currentHealth} | Dmg: {damage}");
+        PlayerHealthChanged?.Invoke(_currentHealth, MaxHealth);
     }
 
 }
