@@ -7,6 +7,8 @@ public abstract class Enemy : MonoBehaviour, IDamageble
     [SerializeField] protected float _visionRadius = 10f;
     [SerializeField] protected int _level = 1;
     [SerializeField] protected CharProgressSO _progressSO;
+    [SerializeField] protected ParticleSystem _damageParticles;
+
     protected CharCharacteristics _charData => _progressSO.CurrentLevelData(_level);
     protected int _currentHealth;
 
@@ -48,6 +50,7 @@ public abstract class Enemy : MonoBehaviour, IDamageble
         }
 
         print($"Health: {_currentHealth} | Dmg: {damage}");
+        _damageParticles.Play();
     }
 
     private void OnDrawGizmosSelected()

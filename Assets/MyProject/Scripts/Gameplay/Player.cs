@@ -6,6 +6,7 @@ public class Player : MonoBehaviour, IDamageble, IMoveble
 {
     [SerializeField] private CharacterController _characterController;
     [SerializeField] private Animator _animator;
+    [SerializeField] private ParticleSystem _bloodParticles;
 
     [Header("Player Settings")]
     [SerializeField] private int _level = 1;
@@ -131,6 +132,7 @@ public class Player : MonoBehaviour, IDamageble, IMoveble
 
         print($"Player Health: {_currentHealth} | Dmg: {damage}");
         PlayerHealthChanged?.Invoke(_currentHealth, MaxHealth);
+        _bloodParticles.Play();
     }
 
 }

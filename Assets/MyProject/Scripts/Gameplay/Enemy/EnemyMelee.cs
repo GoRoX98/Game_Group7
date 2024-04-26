@@ -4,9 +4,6 @@ using UnityEngine.AI;
 [RequireComponent(typeof(Attacker))]
 public class EnemyMelee : Enemy, IMoveble
 {
-    [SerializeField] private float _maxSpeed = 5f;
-    [SerializeField] private float _speedIncrase = 1f;
-
     [Space]
     [SerializeField] private Animator _animator;
     [SerializeField] private NavMeshAgent _agent;

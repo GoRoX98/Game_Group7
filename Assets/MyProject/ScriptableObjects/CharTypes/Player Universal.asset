@@ -23,14 +23,14 @@ MonoBehaviour:
     MinSpeed: 1.5
     SpeedIncrase: 1.2
   - MaxHP: 180
-    MaxSpeed: 8
+    MaxSpeed: 7
     MinSpeed: 1.5
     SpeedIncrase: 1.5
   - MaxHP: 250
-    MaxSpeed: 8
+    MaxSpeed: 7
     MinSpeed: 1.5
     SpeedIncrase: 2
   - MaxHP: 300
-    MaxSpeed: 10
+    MaxSpeed: 7
     MinSpeed: 2
     SpeedIncrase: 2
