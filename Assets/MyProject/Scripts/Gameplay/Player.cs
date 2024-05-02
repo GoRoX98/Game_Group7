@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,10 +10,13 @@ public class Player : MonoBehaviour, IDamageble, IMoveble
     [SerializeField] private ParticleSystem _bloodParticles;
 
     [Header("Player Settings")]
+    [SerializeField] private float _lootingRadius = 1f;
     [SerializeField] private int _level = 1;
     [SerializeField] private CharProgressSO _progressSO;
     private CharCharacteristics _charData => _progressSO.CurrentLevelData(_level);
+    private Inventory _inventory = new Inventory();
 
+    private Collider[] _loot = new Collider[5];
     private float _currentSpeed = 1f;
     private PlayerInput _input;
     private InputAction _moveAction;
@@ -23,6 +27,7 @@ public class Player : MonoBehaviour, IDamageble, IMoveble
     private int _currentHealth;
     private bool _alive = true;
 
+    public List<LootSO> Loot => _inventory.Backpack;
     public float Speed => _currentSpeed;
     public float MaxSpeed => _charData.MaxSpeed;
     public float SpeedIncrase => _charData.SpeedIncrase;
@@ -89,6 +94,9 @@ public class Player : MonoBehaviour, IDamageble, IMoveble
     {
         if (Input.GetMouseButtonDown(0))
             _attacker.Attack();
+
+        if (Input.GetKeyDown(KeyCode.E))
+            PickUpLoot();
     }
 
     #endregion
@@ -97,6 +105,22 @@ public class Player : MonoBehaviour, IDamageble, IMoveble
     {
         _move = obj.ReadValue<Vector2>();
 
+    }
+
+    private void PickUpLoot()
+    {
+        print("Try pickup");
+        int count = Physics.OverlapSphereNonAlloc(transform.position, _lootingRadius, _loot, 1);
+
+        for (int i = 0; i < count; i++)
+        {
+            if (_loot[i].TryGetComponent<Loot>(out var loot))
+            {
+                print("Add loot");
+                _inventory.AddLoot(loot.LootData);
+                loot.OnPickUp();
+            }
+        }
     }
 
     private void Die()
@@ -133,6 +157,12 @@ public class Player : MonoBehaviour, IDamageble, IMoveble
         print($"Player Health: {_currentHealth} | Dmg: {damage}");
         PlayerHealthChanged?.Invoke(_currentHealth, MaxHealth);
         _bloodParticles.Play();
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawWireSphere(transform.position, _lootingRadius);
     }
 
 }

@@ -20,9 +20,9 @@ public class EnemyMelee : Enemy, IMoveble
         _stateMachine = new StateMachine();
         _stateMachine.AddState(new IdleState(_stateMachine, _animator));
         _stateMachine.AddState(new MoveState(_stateMachine, _animator, this));
-        _stateMachine.AddState(new PersecutionState(_stateMachine, _animator, _attacker, GameManager.PlayerTransform, _agent, this));
-        _stateMachine.AddState(new AttackState(_stateMachine, _animator, GameManager.PlayerTransform.GetComponent<Player>(), 
-                                                GameManager.PlayerTransform, _attacker));
+        _stateMachine.AddState(new PersecutionState(_stateMachine, _animator, _attacker, SceneController.PlayerTransform, _agent, this));
+        _stateMachine.AddState(new AttackState(_stateMachine, _animator, SceneController.PlayerTransform.GetComponent<Player>(),
+                                                SceneController.PlayerTransform, _attacker));
         _stateMachine.SetState<IdleState>();
 
         _currentHealth = MaxHealth;
@@ -40,7 +40,7 @@ public class EnemyMelee : Enemy, IMoveble
 
         if (_stateMachine.CurrentState is not PersecutionState && _stateMachine.CurrentState is not AttackState)
         {
-            float distance = Vector3.Distance(GameManager.PlayerPos, transform.position);
+            float distance = Vector3.Distance(SceneController.PlayerPos, transform.position);
             if (distance <= _visionRadius && distance > _attacker.AttackRadius)
                 _stateMachine.SetState<PersecutionState>();
             else if (distance <= _attacker.AttackRadius)
