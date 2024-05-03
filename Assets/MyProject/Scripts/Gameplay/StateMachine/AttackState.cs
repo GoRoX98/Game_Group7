@@ -35,7 +35,10 @@ public class AttackState : StateSM
             _machine.SetState<IdleState>();
         
         if (CanAttack)
+        {
+            _attackerTransform.LookAt(_targetTransform);
             _attacker.Attack();
+        }
         else
             _machine.SetState<PersecutionState>();
     }

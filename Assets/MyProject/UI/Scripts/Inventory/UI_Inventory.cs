@@ -12,6 +12,8 @@ public class UI_Inventory : MonoBehaviour
     {
         if (SceneController.Player.Loot.Count > _backpackSlots.Count)
             AddSlot(_backpackSlots.Count);
+        else if (_backpackSlots.Count > SceneController.Player.Loot.Count)
+            ClearInventory();
     }
 
     private void AddSlot(int index)
@@ -19,5 +21,11 @@ public class UI_Inventory : MonoBehaviour
         UI_Slot slot = Instantiate(_slotPrefab, _backpack).GetComponent<UI_Slot>();
         slot.Init(SceneController.Player.Loot[index]);
         _backpackSlots.Add(slot);
+    }
+
+    private void ClearInventory()
+    {
+        _backpackSlots.ForEach(action: slot => Destroy(slot.gameObject));
+        _backpackSlots.Clear();
     }
 }

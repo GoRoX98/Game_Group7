@@ -15,6 +15,7 @@ public class Player : MonoBehaviour, IDamageble, IMoveble
     [SerializeField] private CharProgressSO _progressSO;
     private CharCharacteristics _charData => _progressSO.CurrentLevelData(_level);
     private Inventory _inventory = new Inventory();
+    private Wallet _wallet = new();
 
     private Collider[] _loot = new Collider[5];
     private float _currentSpeed = 1f;
@@ -28,6 +29,7 @@ public class Player : MonoBehaviour, IDamageble, IMoveble
     private bool _alive = true;
 
     public List<LootSO> Loot => _inventory.Backpack;
+    public Wallet Wallet => _wallet;
     public float Speed => _currentSpeed;
     public float MaxSpeed => _charData.MaxSpeed;
     public float SpeedIncrase => _charData.SpeedIncrase;
@@ -41,6 +43,7 @@ public class Player : MonoBehaviour, IDamageble, IMoveble
 
     #region UnityMethods
 
+
     private void Awake()
     {
         _attacker = GetComponent<Attacker>();
@@ -50,11 +53,13 @@ public class Player : MonoBehaviour, IDamageble, IMoveble
 
     private void OnEnable()
     {
+        NPCTrader.SellLoot += OnTrade;
         //_moveAction.performed += Move;
     }
 
     private void OnDisable()
     {
+        NPCTrader.SellLoot -= OnTrade;
         //_moveAction.performed -= Move;
     }
 
@@ -157,6 +162,12 @@ public class Player : MonoBehaviour, IDamageble, IMoveble
         print($"Player Health: {_currentHealth} | Dmg: {damage}");
         PlayerHealthChanged?.Invoke(_currentHealth, MaxHealth);
         _bloodParticles.Play();
+    }
+
+    private void OnTrade(int gold)
+    {
+        _inventory.SellLoot();
+        _wallet.AddGold(gold);
     }
 
     private void OnDrawGizmosSelected()

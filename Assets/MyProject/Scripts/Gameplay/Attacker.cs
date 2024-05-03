@@ -7,6 +7,7 @@ public class Attacker : MonoBehaviour
     [SerializeField] private Animator _animator;
     [SerializeField] private LayerMask _damageMask;
     [SerializeField] private WeaponSO _weapon;
+    [SerializeField] private Transform _projectile;
     [SerializeField] private MeshFilter _weaponMeshFilter;
 
     private Collider[] _hits = new Collider[3];
@@ -34,19 +35,30 @@ public class Attacker : MonoBehaviour
     //Так как будет дистанционная атакая, делаем прослойку на будущее
     public void Attack()
     {
-        MeleeAttack();
+        if (_weapon.Range <= 3 && CanAttack)
+            MeleeAttack();
+        else if (CanAttack)
+            RangeAttack();
     }
 
     private void MeleeAttack()
     {
-        if (!CanAttack)
-            return;
-
         var index = Random.Range(0, 2);
         _animator.SetInteger("AttackVariant", index);
         _animator.SetTrigger("Attack");
         ResetAttackTimer();
         AttackNear();
+    }
+
+    private void RangeAttack()
+    {
+        var index = Random.Range(0, 2);
+        _animator.SetInteger("AttackVariant", index);
+        _animator.SetTrigger("Attack");
+        ResetAttackTimer();
+
+        Rigidbody rb = Instantiate(_weapon.Projectile, _projectile.position, transform.rotation).GetComponent<Rigidbody>();
+        rb.AddForce(rb.transform.forward * _weapon.ShotStrength, ForceMode.Impulse);
     }
 
     private void AttackNear()
