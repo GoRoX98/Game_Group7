@@ -22,4 +22,4 @@ MonoBehaviour:
   _icon: {fileID: 21300000, guid: c6b96b87adbd25343b9079d963ffb637, type: 3}
   _projectile: {fileID: 3229129360725653507, guid: a0bf3614c32157143af9cdc1018e9664,
     type: 3}
-  _shotStrength: 17
+  _shotStrength: 13

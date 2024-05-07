@@ -38,7 +38,7 @@ public abstract class Enemy : MonoBehaviour, IDamageble
 
     protected virtual void OnTakeDmg(object sender, int damage)
     {
-        if (sender is not Attacker)
+        if (sender is not Attacker && sender is not Spell)
             return;
 
         if (_currentHealth > damage)

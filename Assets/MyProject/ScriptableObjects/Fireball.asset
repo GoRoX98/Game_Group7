@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d142d3c89229b241939f418d364cf06, type: 3}
+  m_Name: Fireball
+  m_EditorClassIdentifier: 
+  Damage: 20
+  LayerMask:
+    serializedVersion: 2
+    m_Bits: 3072
+  Prefab: {fileID: 7542468770478531181, guid: e0ab549047a79ff48a3842f856f56dbc, type: 3}
+  Speed: 10
+  Radius: 2

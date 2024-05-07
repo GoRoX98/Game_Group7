@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour, IDamageble, IMoveble
 {
+    [SerializeField] private LayerMask _layerMask;
     [SerializeField] private CharacterController _characterController;
     [SerializeField] private Animator _animator;
     [SerializeField] private ParticleSystem _bloodParticles;
@@ -13,9 +14,11 @@ public class Player : MonoBehaviour, IDamageble, IMoveble
     [SerializeField] private float _lootingRadius = 1f;
     [SerializeField] private int _level = 1;
     [SerializeField] private CharProgressSO _progressSO;
+    [SerializeField] private Spell _spell;
     private CharCharacteristics _charData => _progressSO.CurrentLevelData(_level);
     private Inventory _inventory = new Inventory();
     private Wallet _wallet = new();
+    private int _exp = 0;
 
     private Collider[] _loot = new Collider[5];
     private float _currentSpeed = 1f;
@@ -35,6 +38,8 @@ public class Player : MonoBehaviour, IDamageble, IMoveble
     public float SpeedIncrase => _charData.SpeedIncrase;
     public int Health => _currentHealth;
     public int MaxHealth => _charData.MaxHP;
+    public int Exp => _exp;
+    public int Level => _level;
 
     public EventHandler<int> TakeDamage => OnTakeDmg;
     public EventHandler<int> TakeHeal => OnHeal;
@@ -54,18 +59,18 @@ public class Player : MonoBehaviour, IDamageble, IMoveble
     private void OnEnable()
     {
         NPCTrader.SellLoot += OnTrade;
+        GameManager.LoadPlayerData += OnLoad;
         //_moveAction.performed += Move;
     }
-
     private void OnDisable()
     {
         NPCTrader.SellLoot -= OnTrade;
+        GameManager.LoadPlayerData -= OnLoad;
         //_moveAction.performed -= Move;
     }
 
     private void Start()
     {
-        _currentHealth = MaxHealth;
         _alive = _currentHealth > 0;
         _camera = Camera.main;
         PlayerHealthChanged?.Invoke(_currentHealth, MaxHealth);
@@ -99,6 +104,19 @@ public class Player : MonoBehaviour, IDamageble, IMoveble
     {
         if (Input.GetMouseButtonDown(0))
             _attacker.Attack();
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            var mouse = Input.mousePosition;
+            Ray ray = _camera.ScreenPointToRay(mouse);
+            RaycastHit[] hits = new RaycastHit[1];
+            Physics.RaycastNonAlloc(ray, hits, 100, _layerMask);
+            
+            _spell.Cast(transform.position + transform.up, hits[0].point);
+        }
+
+        if (!_spell.Completed)
+            _spell.Process();
 
         if (Input.GetKeyDown(KeyCode.E))
             PickUpLoot();
@@ -147,7 +165,7 @@ public class Player : MonoBehaviour, IDamageble, IMoveble
     private void OnTakeDmg(object sender, int damage)
     {
 
-        if (sender is not Attacker)
+        if (sender is not Attacker && sender is not Spell)
             return;
 
         if (_currentHealth > damage)
@@ -168,6 +186,13 @@ public class Player : MonoBehaviour, IDamageble, IMoveble
     {
         _inventory.SellLoot();
         _wallet.AddGold(gold);
+    }
+
+    private void OnLoad(int hp, int exp, int level)
+    {
+        _currentHealth = hp;
+        _exp = exp;
+        _level = level;
     }
 
     private void OnDrawGizmosSelected()

@@ -3,7 +3,6 @@ using UnityEngine;
 public class Attacker : MonoBehaviour
 {
     private bool CanAttack => _attackTime <= 0;
-
     [SerializeField] private Animator _animator;
     [SerializeField] private LayerMask _damageMask;
     [SerializeField] private WeaponSO _weapon;
