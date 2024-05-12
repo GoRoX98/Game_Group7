@@ -5,6 +5,8 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour, IDamageble, IMoveble
 {
+    private static Player _instance;
+
     [SerializeField] private LayerMask _layerMask;
     [SerializeField] private CharacterController _characterController;
     [SerializeField] private Animator _animator;
@@ -51,6 +53,16 @@ public class Player : MonoBehaviour, IDamageble, IMoveble
 
     private void Awake()
     {
+        if (_instance == null)
+        {
+            _instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
         _attacker = GetComponent<Attacker>();
         _input = GetComponent<PlayerInput>();
         _moveAction = _input.actions["Movement"];
@@ -72,12 +84,15 @@ public class Player : MonoBehaviour, IDamageble, IMoveble
     private void Start()
     {
         _alive = _currentHealth > 0;
-        _camera = Camera.main;
         PlayerHealthChanged?.Invoke(_currentHealth, MaxHealth);
+        _spell.Stop();
     }
 
     private void Update()
     {
+        if (_camera == null)
+            _camera = Camera.main;
+
         //Old movement
         /*var horizontal = Input.GetAxis("Horizontal");
         var vertical = Input.GetAxis("Vertical");
@@ -184,7 +199,6 @@ public class Player : MonoBehaviour, IDamageble, IMoveble
 
     private void OnTrade(int gold)
     {
-        _inventory.SellLoot();
         _wallet.AddGold(gold);
     }
 

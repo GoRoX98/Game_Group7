@@ -13,15 +13,18 @@ public class GameManager : MonoBehaviour
     private float _timer = 0f;
     
     public static event Action<int, int, int> LoadPlayerData;
+    
 
     private void OnEnable()
     {
         SceneManager.activeSceneChanged += OnSceneChanged;
+        MainMenu.NewGame += ClearSave;
     }
 
     private void OnDisable()
     {
         SceneManager.activeSceneChanged -= OnSceneChanged;
+        MainMenu.NewGame -= ClearSave;
     }
 
     private void Awake()
@@ -62,11 +65,12 @@ public class GameManager : MonoBehaviour
     {
         print("Load Data");
         int hp = PlayerPrefs.GetInt("Player_HP", SceneController.Player.MaxHealth);
-        print($"Load HP: {hp}");
         int exp = PlayerPrefs.GetInt("Player_Exp", 0);
         int level = PlayerPrefs.GetInt("Player_Level", 1);
         LoadPlayerData?.Invoke(hp, exp, level);
     }
+
+    private void ClearSave() => PlayerPrefs.DeleteAll();
 
     private void OnSceneChanged(Scene arg0, Scene arg1)
     {

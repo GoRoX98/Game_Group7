@@ -44,6 +44,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59dd39fd7659a6948abeb45804bec1a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _clearSave: 0
   _timeAutoSave: 30
   _saveScenes:
   - TestScene
+  - SafeZone
+  - Dungeon

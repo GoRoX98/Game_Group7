@@ -4,10 +4,15 @@ using UnityEngine.UI;
 
 public class HUD : MonoBehaviour
 {
-    [SerializeField] private Player _player;
+    private Player _player;
     [SerializeField] private Scrollbar _playerHealth;
     [SerializeField] private Scrollbar _playerExp;
     [SerializeField] private TextMeshProUGUI _goldTMP;
+
+    private void Awake()
+    {
+        _player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+    }
 
     private void OnEnable()
     {

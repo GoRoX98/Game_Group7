@@ -8,6 +8,7 @@ public abstract class Enemy : MonoBehaviour, IDamageble
     [SerializeField] protected int _level = 1;
     [SerializeField] protected CharProgressSO _progressSO;
     [SerializeField] protected ParticleSystem _damageParticles;
+    protected int _expReward;
 
     protected CharCharacteristics _charData => _progressSO.CurrentLevelData(_level);
     protected int _currentHealth;
@@ -21,10 +22,13 @@ public abstract class Enemy : MonoBehaviour, IDamageble
 
     public EventHandler<int> TakeDamage => OnTakeDmg;
     public EventHandler<int> TakeHeal => OnHeal;
+    public int ExpReward => _expReward;
+    public static event Action<int> EnemyDie;
 
     protected virtual void Die()
     {
         print("Dead");
+        EnemyDie?.Invoke(_expReward);
     }
 
     protected virtual void OnHeal(object sender, int heal)

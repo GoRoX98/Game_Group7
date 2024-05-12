@@ -15,6 +15,7 @@ public class EnemyMelee : Enemy, IMoveble
 
     private void Start()
     {
+        _expReward = Random.Range(4, 10) * _level;
         _attacker = _agent.GetComponent<Attacker>();
         
         _stateMachine = new StateMachine();
@@ -30,6 +31,14 @@ public class EnemyMelee : Enemy, IMoveble
 
     private void Update()
     {
+        if (!IsAlive)
+        {
+            _animator.SetTrigger("Dead");
+            _animator.SetFloat("Speed", 0);
+            _agent.speed = 0;
+            return;
+        }
+
         if (!_agent.hasPath)
         {
             _stateMachine.SetState<IdleState>();
@@ -51,6 +60,8 @@ public class EnemyMelee : Enemy, IMoveble
 
         _stateMachine.Update();
     }
+
+    private void OnDeath() => Destroy(gameObject);
 
     private Vector3 TakeNewPath()
     {

@@ -8,9 +8,15 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/MyProject/Scenes/Main.unity
     guid: f7456b32b1a151747b8e3fd36f0f5c1c
-  - enabled: 1
+  - enabled: 0
     path: Assets/MyProject/Scenes/TestScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/MyProject/Scenes/SafeZone.unity
+    guid: f04057d3a7305f047b5edaf8d755e26c
+  - enabled: 1
+    path: Assets/MyProject/Scenes/Dungeon.unity
+    guid: 3e5db814eb6b1764a921796c0a9ce76a
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: e689a87ef975ffa4398c55fda387a4c5,
       type: 2}

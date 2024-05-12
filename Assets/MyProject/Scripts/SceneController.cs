@@ -3,10 +3,10 @@ using UnityEngine;
 
 public class SceneController : MonoBehaviour
 {
+    [SerializeField] private SceneSettings _settings;
     [SerializeField] private List<Transform> _spawnLootPoints = new List<Transform>();
-    [SerializeField] private int _spawnLootCount = 0;
-    [SerializeField] private GameObject _lootPrefab;
-    [SerializeField] private List<LootSO> _lootVariants = new List<LootSO>();
+    [SerializeField] private List<Transform> _spawnEnemyPoints = new List<Transform>();
+    
 
     private static Player _player;
     private static Transform _playerTransform;
@@ -15,23 +15,56 @@ public class SceneController : MonoBehaviour
     public static Transform PlayerTransform => _playerTransform;
     public static Player Player => _player;
 
-    void Awake()
+    private void Awake()
     {
         _player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
-        _playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+        _playerTransform = _player.transform;
     }
 
     private void Start()
     {
-        for (int i = 0; i < _spawnLootCount; i++)
+        if (_settings is DungeonSettings settings)
+            GenerateDungeon(settings);
+
+        _playerTransform.position = _settings.StartPosition;
+    }
+
+    private void GenerateDungeon(DungeonSettings settings)
+    {
+        List<Transform> lootPoints = new List<Transform>(_spawnLootPoints);
+        List<Transform> enemyPoints = new List<Transform>(_spawnEnemyPoints);
+
+        for (int i = 0; i < settings.LootCount; i++)
         {
-            if (i > _spawnLootPoints.Count)
+            Vector3 position;
+            if (lootPoints.Count == 0)
                 break;
+            else
+            {
+                Transform point = lootPoints[Random.Range(0, lootPoints.Count)];
+                position = point.position;
+                lootPoints.Remove(point);
+            }
 
-            int index = Random.Range(0, _lootVariants.Count);
+            int index = Random.Range(0, settings.LootVariants.Count);
 
-            Loot loot = Instantiate(_lootPrefab, _spawnLootPoints[i].position, Quaternion.identity).GetComponent<Loot>();
-            loot.Init(_lootVariants[index]);
+            Loot loot = Instantiate(settings.LootPrefab, position, Quaternion.identity).GetComponent<Loot>();
+            loot.Init(settings.LootVariants[index]);
+        }
+
+        for (int i = 0; i < settings.EnemiesCount; i++)
+        {
+            Vector3 position;
+            if (enemyPoints.Count < 4)
+                enemyPoints = new(_spawnEnemyPoints);
+            
+            Transform point = enemyPoints[Random.Range(0, enemyPoints.Count)];
+            position = point.position;
+            enemyPoints.Remove(point);
+            
+
+            int index = Random.Range(0, settings.EnemiesPrefabs.Count);
+            Instantiate(settings.EnemiesPrefabs[index], position, Quaternion.identity);
         }
     }
 }

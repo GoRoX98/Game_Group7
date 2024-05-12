@@ -46,4 +46,9 @@ public class Fireball : Spell
         }
 
     }
+
+    public override void Stop()
+    {
+        Completed = true;
+    }
 }
