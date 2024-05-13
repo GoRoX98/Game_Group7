@@ -9,13 +9,11 @@ public class HUD : MonoBehaviour
     [SerializeField] private Scrollbar _playerExp;
     [SerializeField] private TextMeshProUGUI _goldTMP;
 
-    private void Awake()
+
+    private void Start()
     {
         _player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
-    }
-
-    private void OnEnable()
-    {
+        OnGoldChanged(_player.Wallet.Gold);
         Player.PlayerHealthChanged += OnPlayerHealthChanged;
         _player.Wallet.GoldChanged += OnGoldChanged;
     }
@@ -24,6 +22,11 @@ public class HUD : MonoBehaviour
     {
         Player.PlayerHealthChanged -= OnPlayerHealthChanged;
         _player.Wallet.GoldChanged -= OnGoldChanged;
+    }
+
+    private void Update()
+    {
+        _playerExp.size = (float)_player.Exp / (float)_player.MaxExp;
     }
 
     private void OnPlayerHealthChanged(int health, int maxHealth)

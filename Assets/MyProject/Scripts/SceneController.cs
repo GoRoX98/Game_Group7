@@ -3,22 +3,33 @@ using UnityEngine;
 
 public class SceneController : MonoBehaviour
 {
+    [SerializeField] private GameObject _playerPrefab;
     [SerializeField] private SceneSettings _settings;
     [SerializeField] private List<Transform> _spawnLootPoints = new List<Transform>();
     [SerializeField] private List<Transform> _spawnEnemyPoints = new List<Transform>();
     
 
-    private static Player _player;
-    private static Transform _playerTransform;
+    private Player _player;
+    private Transform _playerTransform;
 
-    public static Vector3 PlayerPos => _playerTransform.position;
-    public static Transform PlayerTransform => _playerTransform;
-    public static Player Player => _player;
+    public static Transform PlayerTransform;
+    public static Vector3 PlayerPos => PlayerTransform.position;
+    public static Player Player;
 
     private void Awake()
     {
-        _player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        if (GameObject.FindGameObjectWithTag("Player") != null)
+            _player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        else
+            SpawnPlayer();
+
         _playerTransform = _player.transform;
+        PlayerTransform = _playerTransform;
+        Player = _player;
+
+        _player.gameObject.SetActive(false);
+        _playerTransform.SetPositionAndRotation(_settings.StartPosition, Quaternion.identity);
+        _player.gameObject.SetActive(true);
     }
 
     private void Start()
@@ -26,7 +37,11 @@ public class SceneController : MonoBehaviour
         if (_settings is DungeonSettings settings)
             GenerateDungeon(settings);
 
-        _playerTransform.position = _settings.StartPosition;
+    }
+
+    private void SpawnPlayer()
+    {
+        _player = Instantiate(_playerPrefab, _settings.StartPosition, Quaternion.identity).GetComponent<Player>();
     }
 
     private void GenerateDungeon(DungeonSettings settings)

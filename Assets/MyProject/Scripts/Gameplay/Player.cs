@@ -37,10 +37,28 @@ public class Player : MonoBehaviour, IDamageble, IMoveble
     public Wallet Wallet => _wallet;
     public float Speed => _currentSpeed;
     public float MaxSpeed => _charData.MaxSpeed;
+    public int MaxExp => _progressSO.ExpForLevel(_level);
     public float SpeedIncrase => _charData.SpeedIncrase;
     public int Health => _currentHealth;
     public int MaxHealth => _charData.MaxHP;
-    public int Exp => _exp;
+    public int Exp
+    {
+        get => _exp;
+        private set
+        {
+            int exp = value;
+            if (exp >= MaxExp)
+            {
+                exp -= MaxExp; 
+                _level += 1;
+                _exp = exp;
+            }
+            else
+            {
+                _exp = value;
+            }
+        }
+    }
     public int Level => _level;
 
     public EventHandler<int> TakeDamage => OnTakeDmg;
@@ -71,6 +89,7 @@ public class Player : MonoBehaviour, IDamageble, IMoveble
     private void OnEnable()
     {
         NPCTrader.SellLoot += OnTrade;
+        Enemy.EnemyDie += exp => Exp += exp;
         GameManager.LoadPlayerData += OnLoad;
         //_moveAction.performed += Move;
     }

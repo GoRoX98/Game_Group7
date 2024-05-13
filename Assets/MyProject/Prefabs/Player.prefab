@@ -8164,11 +8164,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d62332606cdb19429b6d87dde09a7bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _layerMask:
+    serializedVersion: 2
+    m_Bits: 0
   _characterController: {fileID: -5472466779794071043}
   _animator: {fileID: 4984217113230543409}
   _bloodParticles: {fileID: 1012895168106069532}
+  _lootingRadius: 1
   _level: 3
   _progressSO: {fileID: 11400000, guid: d48af441824f51e489913657b7d379bc, type: 2}
+  _spell: {fileID: 11400000, guid: 2d02989f828b87d4095f37f882b3a098, type: 2}
 --- !u!114 &616845609428523575
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8185,7 +8190,8 @@ MonoBehaviour:
   _damageMask:
     serializedVersion: 2
     m_Bits: 2048
-  _weapon: {fileID: 11400000, guid: f1c8d1b61ef8e324f81a83085bce2ebe, type: 2}
+  _weapon: {fileID: 11400000, guid: b3e6f9a348b9e924dbf283e07d00eff0, type: 2}
+  _projectile: {fileID: 0}
   _weaponMeshFilter: {fileID: 7119351784933981239}
 --- !u!1 &3011114351870736024
 GameObject:

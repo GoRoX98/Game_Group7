@@ -14,6 +14,7 @@ public class MainMenu : MonoBehaviour
     public void StartNewGame()
     {
         NewGame?.Invoke();
-        SceneManager.LoadSceneAsync("SafeZone");
+        LoadingScene.NextScene = "SafeZone";
+        SceneManager.LoadScene("Loading");
     }
 }

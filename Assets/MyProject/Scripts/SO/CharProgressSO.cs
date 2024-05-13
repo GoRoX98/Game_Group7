@@ -5,11 +5,13 @@ using UnityEngine;
 public class CharProgressSO : ScriptableObject
 {
     [SerializeField] private string _name;
+    [SerializeField] private int _expForLevel = 100;
+    [SerializeField] private float _expKfPerLevel = 1;
     [SerializeField] private List<CharCharacteristics> _char—haracteristicsData;
 
     public string Name => _name;
     public List<CharCharacteristics> Char—haracteristics => _char—haracteristicsData;
-    
+
     public CharCharacteristics CurrentLevelData(int level)
     {
         Debug.Log("Take char data");
@@ -21,5 +23,10 @@ public class CharProgressSO : ScriptableObject
             return _char—haracteristicsData[_char—haracteristicsData.Count - 1];
 
         return _char—haracteristicsData[index];
+    }
+
+    public int ExpForLevel(int level) 
+    {
+        return (int)(_expForLevel * (_expKfPerLevel * level)); 
     }
 }

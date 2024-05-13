@@ -44,16 +44,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a99898e4d4406d479fab7fd84f6204e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerPrefab: {fileID: 2906397449250687371, guid: 034fb853652887647aacab8b399361c2,
+    type: 3}
+  _settings: {fileID: 0}
   _spawnLootPoints:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  _spawnLootCount: 5
-  _lootPrefab: {fileID: 1155748344145907509, guid: 0b30e6fbc9281e5469198dc331780e0d,
-    type: 3}
-  _lootVariants:
-  - {fileID: 11400000, guid: 6c2ed7a9c0249e645b54ea2b0e03c862, type: 2}
-  - {fileID: 11400000, guid: 19001cd2fa3596f4aa3d4a240162da8c, type: 2}
-  - {fileID: 11400000, guid: 101ce714a2b389e479d980b906367c65, type: 2}
+  _spawnEnemyPoints: []

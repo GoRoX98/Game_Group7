@@ -10,7 +10,10 @@ public class ChangeScene : MonoBehaviour
     void Update()
     {
         if (_canChangeScene && Input.GetKeyDown(KeyCode.E))
-            SceneManager.LoadScene(_sceneName);
+        {
+            LoadingScene.NextScene = _sceneName;
+            SceneManager.LoadScene("Loading");
+        }
     }
 
     private void OnTriggerEnter(Collider col)

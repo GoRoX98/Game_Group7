@@ -20,8 +20,9 @@ public class NPCTrader : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.T) && Vector3.Distance(transform.position, SceneController.PlayerPos) < _tradeRadius)
-            TradeWindow();
+        if (Input.GetKeyDown(KeyCode.T))
+            if(Vector3.Distance(transform.position, SceneController.PlayerPos) < _tradeRadius)
+                TradeWindow();
     }
 
     private void TradeWindow() => _tradeWindow.SetActive(!_tradeWindow.activeSelf);
